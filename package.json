@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/DazKins/crudly-npm/issues"
   },
-  "homepage": "https://crudly.co"
+  "homepage": "https://crudly.co",
+  "dependencies": {
+    "node-fetch": "^3.3.1"
+  }
 }
