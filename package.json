@@ -1,0 +1,16 @@
+{
+  "name": "@crudly/crudly",
+  "version": "0.1.0",
+  "description": "",
+  "main": "crudly.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DazKins/crudly-npm.git"
+  },
+  "author": "crudly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DazKins/crudly-npm/issues"
+  },
+  "homepage": "https://crudly.co"
+}
