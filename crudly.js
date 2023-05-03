@@ -6,7 +6,7 @@ class CrudlyValidationError extends Error {
   }
 }
 
-const createCrudly = ({
+export const createCrudly = ({
   projectId,
   projectKey,
   host = "localhost",
@@ -150,8 +150,4 @@ const createCrudly = ({
     getTables,
     deleteTable,
   };
-};
-
-export default {
-  createCrudly,
 };
