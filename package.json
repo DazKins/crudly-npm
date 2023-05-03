@@ -15,5 +15,6 @@
   "homepage": "https://crudly.co",
   "dependencies": {
     "node-fetch": "^3.3.1"
-  }
+  },
+  "type": "module"
 }
