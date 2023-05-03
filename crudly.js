@@ -11,7 +11,7 @@ export const createCrudly = ({
   projectKey,
   host = "localhost",
   port = "80",
-  protocol = "https://",
+  protocol = "http://",
   customHeaders = {},
 }) => {
   const url = `${protocol}${host}:${port}`;
