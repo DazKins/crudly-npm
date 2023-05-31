@@ -24,7 +24,6 @@
   ],
   "type": "module",
   "devDependencies": {
-    "@types/node-fetch": "^2.6.4",
     "typescript": "^5.0.4"
   }
 }
