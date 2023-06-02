@@ -5,7 +5,8 @@
   "main": "./lib/crudly.js",
   "scripts": {
     "build": "tsc",
-    "test": ""
+    "test": "",
+    "prepublishOnly": "tsc"
   },
   "repository": {
     "type": "git",
