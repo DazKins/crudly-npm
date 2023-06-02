@@ -12,7 +12,7 @@ type CrudlyOptions = {
   host: string | undefined;
   port: string | undefined;
   protocol: string | undefined;
-  customHeaders: { [key: string]: string } | undefined;
+  customHeaders?: { [key: string]: string };
 };
 
 const CrudlyOptionsDefaults = {
