@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import { CrudlyOptions } from "./model/options";
-import { TableSchema } from "./model/table";
+import { TableName, TableSchema } from "./model/table";
+import { Entity, EntityId } from "./model/entity";
 
 class CrudlyValidationError extends Error {
   constructor(message: string) {
@@ -28,9 +29,9 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const createEntity = async (
-    tableName: string,
-    entity: any
-  ): Promise<string> => {
+    tableName: TableName,
+    entity: Entity
+  ): Promise<EntityId> => {
     const res = await fetch(`${url}/tables/${tableName}/entities`, {
       method: "POST",
       headers,
@@ -45,8 +46,8 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const createEntities = async (
-    tableName: string,
-    entities: any[]
+    tableName: TableName,
+    entities: Entity[]
   ): Promise<void> => {
     const res = await fetch(`${url}/tables/${tableName}/entities/batch`, {
       method: "POST",
@@ -60,10 +61,10 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const putEntity = async (
-    tableName: string,
-    id: string,
-    entity: any
-  ): Promise<string> => {
+    tableName: TableName,
+    id: EntityId,
+    entity: Entity
+  ): Promise<EntityId> => {
     const res = await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       method: "PUT",
       headers,
@@ -78,24 +79,24 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const getEntityById = async (
-    tableName: string,
-    entityId: string
-  ): Promise<any> => {
-    const res = await fetch(`${url}/tables/${tableName}/entities/${entityId}`, {
+    tableName: TableName,
+    id: EntityId
+  ): Promise<Entity> => {
+    const res = await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       headers,
     });
 
     if (res.status == 404) {
-      return null;
+      throw new Error("not found");
     }
 
-    return await res.json();
+    return (await res.json()) as Entity;
   };
 
   const getEntities = async (
-    tableName: string,
-    filters: string[] = []
-  ): Promise<any[]> => {
+    tableName: TableName,
+    filters: Filter[] = []
+  ): Promise<Entity[]> => {
     const queryParams = new URLSearchParams(
       filters.map((filter) => ["filter", filter])
     ).toString();
@@ -111,20 +112,23 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const updateEntity = async (
-    tableName: string,
-    id: string,
-    entity: any
-  ): Promise<any> => {
+    tableName: TableName,
+    id: EntityId,
+    entity: Entity
+  ): Promise<Entity> => {
     const res = await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       method: "PATCH",
       headers,
       body: JSON.stringify(entity),
     });
 
-    return await res.json();
+    return (await res.json()) as Entity;
   };
 
-  const deleteEntity = async (tableName: string, id: string): Promise<void> => {
+  const deleteEntity = async (
+    tableName: TableName,
+    id: EntityId
+  ): Promise<void> => {
     await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       method: "DELETE",
       headers,
@@ -132,19 +136,17 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 
   const createTable = async (
-    tableName: string,
+    tableName: TableName,
     tableSchema: TableSchema
-  ): Promise<any> => {
-    const res = await fetch(`${url}/tables/${tableName}`, {
+  ): Promise<void> => {
+    await fetch(`${url}/tables/${tableName}`, {
       method: "PUT",
       headers,
       body: JSON.stringify(tableSchema),
     });
-
-    return await res.json();
   };
 
-  const getTableSchema = async (tableName: string): Promise<TableSchema> => {
+  const getTableSchema = async (tableName: TableName): Promise<TableSchema> => {
     const res = await fetch(`${url}/tables/${tableName}`, {
       method: "GET",
       headers,
@@ -162,7 +164,7 @@ export const createCrudly = (options: CrudlyOptions) => {
     return (await res.json()) as { [key: string]: TableSchema };
   };
 
-  const deleteTable = async (tableName: string): Promise<void> => {
+  const deleteTable = async (tableName: TableName): Promise<void> => {
     await fetch(`${url}/tables/${tableName}`, {
       method: "DELETE",
       headers,

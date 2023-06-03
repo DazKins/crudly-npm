@@ -1,3 +1,5 @@
+export type TableName = string;
+
 export enum FieldType {
   Id,
   Integer,
