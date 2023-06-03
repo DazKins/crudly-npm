@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ES2022",
+    "target": "es5",
     "declaration": true,
     "outDir": "./lib",
     "strict": true,
-    "moduleResolution": "node16",
-    "skipLibCheck": true
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["dom", "esnext"]
   },
   "include": ["src"],
   "exclude": ["node_modules"]
