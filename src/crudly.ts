@@ -160,7 +160,7 @@ export const createCrudly = (options: CrudlyOptions) => {
     return await res.json();
   };
 
-  const getTables = async (): Promise<any[]> => {
+  const getTables = async (): Promise<{ [key: string]: any }> => {
     const res = await fetch(`${url}/tables`, {
       method: "GET",
       headers,
