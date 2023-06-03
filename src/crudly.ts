@@ -1,19 +1,12 @@
 import fetch from "node-fetch";
+import { CrudlyOptions } from "./model/options";
+import { TableSchema } from "./model/table";
 
 class CrudlyValidationError extends Error {
   constructor(message: string) {
     super(message);
   }
 }
-
-type CrudlyOptions = {
-  projectId: string;
-  projectKey: string;
-  host: string | undefined;
-  port: string | undefined;
-  protocol: string | undefined;
-  customHeaders?: { [key: string]: string };
-};
 
 const CrudlyOptionsDefaults = {
   host: "localhost",
@@ -140,7 +133,7 @@ export const createCrudly = (options: CrudlyOptions) => {
 
   const createTable = async (
     tableName: string,
-    tableSchema: any
+    tableSchema: TableSchema
   ): Promise<any> => {
     const res = await fetch(`${url}/tables/${tableName}`, {
       method: "PUT",
@@ -151,22 +144,22 @@ export const createCrudly = (options: CrudlyOptions) => {
     return await res.json();
   };
 
-  const getTableSchema = async (tableName: string): Promise<any> => {
+  const getTableSchema = async (tableName: string): Promise<TableSchema> => {
     const res = await fetch(`${url}/tables/${tableName}`, {
       method: "GET",
       headers,
     });
 
-    return await res.json();
+    return (await res.json()) as TableSchema;
   };
 
-  const getTables = async (): Promise<{ [key: string]: any }> => {
+  const getTables = async (): Promise<{ [key: string]: TableSchema }> => {
     const res = await fetch(`${url}/tables`, {
       method: "GET",
       headers,
     });
 
-    return (await res.json()) as any[];
+    return (await res.json()) as { [key: string]: TableSchema };
   };
 
   const deleteTable = async (tableName: string): Promise<void> => {
