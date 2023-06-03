@@ -1,6 +1,6 @@
 {
   "name": "@crudly/crudly",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "main": "./lib/crudly.js",
   "scripts": {
