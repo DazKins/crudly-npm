@@ -3,9 +3,21 @@ import { CrudlyOptions } from "./model/options";
 import { TableName, TableSchema } from "./model/table";
 import { Entity, EntityId } from "./model/entity";
 
+class CrudlyUnexpectedError extends Error {
+  constructor(message: string) {
+    super(`unexpected crudly error: ${message}`)
+  }
+}
+
 class CrudlyValidationError extends Error {
   constructor(message: string) {
     super(message);
+  }
+}
+
+class CrudlyEntityNotFoundError extends Error {
+  constructor() {
+    super("entity not found");
   }
 }
 
@@ -40,6 +52,8 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     if (res.status == 400) {
       throw new CrudlyValidationError(await res.text());
+    } else if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
     }
 
     return await res.text();
@@ -57,6 +71,8 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     if (res.status == 400) {
       throw new CrudlyValidationError(await res.text());
+    } else if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
     }
   };
 
@@ -73,6 +89,8 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     if (res.status == 400) {
       throw new CrudlyValidationError(await res.text());
+    } else if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
     }
 
     return await res.text();
@@ -87,7 +105,9 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 404) {
-      throw new Error("not found");
+      throw new CrudlyEntityNotFoundError();
+    } else if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
     }
 
     return (await res.json()) as Entity;
@@ -107,6 +127,10 @@ export const createCrudly = (options: CrudlyOptions) => {
         headers,
       }
     );
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
 
     return (await res.json()) as any[];
   };
@@ -121,6 +145,10 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
       body: JSON.stringify(entity),
     });
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
 
     return (await res.json()) as Entity;
   };
@@ -129,21 +157,29 @@ export const createCrudly = (options: CrudlyOptions) => {
     tableName: TableName,
     id: EntityId
   ): Promise<void> => {
-    await fetch(`${url}/tables/${tableName}/entities/${id}`, {
+    const res = await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       method: "DELETE",
       headers,
     });
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
   };
 
   const createTable = async (
     tableName: TableName,
     tableSchema: TableSchema
   ): Promise<void> => {
-    await fetch(`${url}/tables/${tableName}`, {
+    const res = await fetch(`${url}/tables/${tableName}`, {
       method: "PUT",
       headers,
       body: JSON.stringify(tableSchema),
     });
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
   };
 
   const getTableSchema = async (tableName: TableName): Promise<TableSchema> => {
@@ -151,6 +187,10 @@ export const createCrudly = (options: CrudlyOptions) => {
       method: "GET",
       headers,
     });
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
 
     return (await res.json()) as TableSchema;
   };
@@ -160,15 +200,23 @@ export const createCrudly = (options: CrudlyOptions) => {
       method: "GET",
       headers,
     });
+    
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
 
     return (await res.json()) as { [key: string]: TableSchema };
   };
 
   const deleteTable = async (tableName: TableName): Promise<void> => {
-    await fetch(`${url}/tables/${tableName}`, {
+    const res = await fetch(`${url}/tables/${tableName}`, {
       method: "DELETE",
       headers,
     });
+
+    if (res.status != 200) {
+      throw new CrudlyUnexpectedError(`status: ${res.status}, body: ${await res.text()}`);
+    }
   };
 
   return {
