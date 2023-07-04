@@ -2,30 +2,12 @@ import fetch from "node-fetch";
 import { CrudlyOptions } from "./model/options";
 import { TableName, TableSchema } from "./model/table";
 import { Entity, EntityId } from "./model/entity";
-
-export class CrudlyValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class CrudlyEntityNotFoundError extends Error {
-  constructor() {
-    super("entity not found");
-  }
-}
-
-export class CrudlyRateLimitExceededError extends Error {
-  constructor() {
-    super("rate limit exceeded");
-  }
-}
-
-export class CrudlyUnexpectedError extends Error {
-  constructor(message: string) {
-    super(`unexpected crudly error: ${message}`);
-  }
-}
+import {
+  CrudlyEntityNotFoundError,
+  CrudlyRateLimitExceededError,
+  CrudlyUnexpectedError,
+  CrudlyValidationError,
+} from "./model/error";
 
 const CrudlyOptionsDefaults = {
   host: "localhost",
@@ -57,13 +39,13 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 400) {
-      throw new CrudlyValidationError(await res.text());
+      throw { reason: await res.text() } as CrudlyValidationError;
     } else if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return await res.text();
@@ -80,13 +62,13 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 400) {
-      throw new CrudlyValidationError(await res.text());
+      throw { reason: await res.text() } as CrudlyValidationError;
     } else if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
   };
 
@@ -102,13 +84,13 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 400) {
-      throw new CrudlyValidationError(await res.text());
+      throw { reason: await res.text() } as CrudlyValidationError;
     } else if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return await res.text();
@@ -123,13 +105,13 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 404) {
-      throw new CrudlyEntityNotFoundError();
+      throw {} as CrudlyEntityNotFoundError;
     } else if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return (await res.json()) as Entity;
@@ -151,11 +133,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     );
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return (await res.json()) as any[];
@@ -173,11 +155,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return (await res.json()) as Entity;
@@ -193,11 +175,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
   };
 
@@ -212,11 +194,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
   };
 
@@ -227,11 +209,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return (await res.json()) as TableSchema;
@@ -244,11 +226,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
 
     return (await res.json()) as { [key: string]: TableSchema };
@@ -261,11 +243,11 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     if (res.status == 429) {
-      throw new CrudlyRateLimitExceededError();
+      throw {} as CrudlyRateLimitExceededError;
     } else if (res.status != 200) {
-      throw new CrudlyUnexpectedError(
-        `status: ${res.status}, body: ${await res.text()}`
-      );
+      throw {
+        message: `status: ${res.status}, body: ${await res.text()}`,
+      } as CrudlyUnexpectedError;
     }
   };
 
