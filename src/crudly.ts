@@ -3,25 +3,25 @@ import { CrudlyOptions } from "./model/options";
 import { TableName, TableSchema } from "./model/table";
 import { Entity, EntityId } from "./model/entity";
 
-class CrudlyValidationError extends Error {
+export class CrudlyValidationError extends Error {
   constructor(message: string) {
     super(message);
   }
 }
 
-class CrudlyEntityNotFoundError extends Error {
+export class CrudlyEntityNotFoundError extends Error {
   constructor() {
     super("entity not found");
   }
 }
 
-class CrudlyRateLimitExceededError extends Error {
+export class CrudlyRateLimitExceededError extends Error {
   constructor() {
     super("rate limit exceeded");
   }
 }
 
-class CrudlyUnexpectedError extends Error {
+export class CrudlyUnexpectedError extends Error {
   constructor(message: string) {
     super(`unexpected crudly error: ${message}`);
   }
