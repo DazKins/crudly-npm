@@ -100,11 +100,11 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     if (options) {
       if (options.filters) {
-        queryParams.concat(options.filters.map((filter) => ["filter", filter]));
+        queryParams = queryParams.concat(options.filters.map((filter) => ["filter", filter]));
       }
 
       if (options.orders) {
-        queryParams.concat(options.orders.map((order) => ["order", order]));
+        queryParams = queryParams.concat(options.orders.map((order) => ["order", order]));
       }
 
       if (options.limit) {
