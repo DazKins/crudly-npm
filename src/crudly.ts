@@ -85,25 +85,35 @@ export const createCrudly = (options: CrudlyOptions) => {
     return (await res.json()) as Entity;
   };
 
+  type GetEntitiesOptions = {
+    filters?: Filter[];
+    orders?: Order[];
+    limit?: number;
+    offset?: number;
+  };
+
   const getEntities = async (
     tableName: TableName,
-    filters: Filter[] = [],
-    orders: Order[] = [],
-    limit?: number,
-    offset?: number
+    options?: GetEntitiesOptions
   ): Promise<Entity[]> => {
     let queryParams = [] as string[][];
 
-    queryParams.concat(filters.map((filter) => ["filter", filter]));
+    if (options) {
+      if (options.filters) {
+        queryParams.concat(options.filters.map((filter) => ["filter", filter]));
+      }
 
-    queryParams.concat(orders.map((order) => ["order", order]));
+      if (options.orders) {
+        queryParams.concat(options.orders.map((order) => ["order", order]));
+      }
 
-    if (limit) {
-      queryParams.push(["limit", `${limit}`]);
-    }
+      if (options.limit) {
+        queryParams.push(["limit", `${options.limit}`]);
+      }
 
-    if (offset) {
-      queryParams.push(["offset", `${limit}`]);
+      if (options.offset) {
+        queryParams.push(["offset", `${options.offset}`]);
+      }
     }
 
     const res = await fetch(
