@@ -1,12 +1,12 @@
 export type TableName = string;
 
 export enum FieldType {
-  Id,
-  Integer,
-  String,
-  Boolean,
-  Time,
-  Enum,
+  Id = "id",
+  Integer = "integer",
+  String = "string",
+  Boolean = "boolean",
+  Time = "time",
+  Enum = "enum",
 }
 
 export type FieldSchema = {
