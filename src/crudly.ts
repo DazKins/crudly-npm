@@ -15,6 +15,13 @@ const CrudlyOptionsDefaults = {
   protocol: "http://",
 };
 
+export type GetEntitiesOptions = {
+  filters?: Filter[];
+  orders?: Order[];
+  limit?: number;
+  offset?: number;
+};
+
 export const createCrudly = (options: CrudlyOptions) => {
   const protocol = options.protocol ?? CrudlyOptionsDefaults.protocol;
   const host = options.host ?? CrudlyOptionsDefaults.host;
@@ -83,13 +90,6 @@ export const createCrudly = (options: CrudlyOptions) => {
     await errorHandleShared(res);
 
     return (await res.json()) as Entity;
-  };
-
-  type GetEntitiesOptions = {
-    filters?: Filter[];
-    orders?: Order[];
-    limit?: number;
-    offset?: number;
   };
 
   const getEntities = async (
