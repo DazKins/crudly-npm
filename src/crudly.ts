@@ -100,11 +100,15 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     if (options) {
       if (options.filters) {
-        queryParams = queryParams.concat(options.filters.map((filter) => ["filter", filter]));
+        queryParams = queryParams.concat(
+          options.filters.map((filter) => ["filter", filter])
+        );
       }
 
       if (options.orders) {
-        queryParams = queryParams.concat(options.orders.map((order) => ["order", order]));
+        queryParams = queryParams.concat(
+          options.orders.map((order) => ["order", order])
+        );
       }
 
       if (options.limit) {
@@ -156,6 +160,17 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     await errorHandleShared(res);
+  };
+
+  const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
+    const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
+      method: "GET",
+      headers,
+    });
+
+    await errorHandleShared(res);
+
+    return ((await res.json()) as any).totalCount;
   };
 
   const createTable = async (
@@ -210,6 +225,7 @@ export const createCrudly = (options: CrudlyOptions) => {
     getEntityById,
     getEntities,
     deleteEntity,
+    getTotalEntityCount,
 
     createTable,
     getTableSchema,
