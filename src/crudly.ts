@@ -1,7 +1,7 @@
 import fetch, { Response } from "node-fetch";
 import { CrudlyOptions } from "./model/options";
 import { TableName, TableSchema } from "./model/table";
-import { Entity, EntityId } from "./model/entity";
+import { Entity, EntityId, GetEntitiesResponse } from "./model/entity";
 import {
   CrudlyNotFoundError,
   CrudlyRateLimitExceededError,
@@ -95,7 +95,7 @@ export const createCrudly = (options: CrudlyOptions) => {
   const getEntities = async (
     tableName: TableName,
     options?: GetEntitiesOptions
-  ): Promise<Entity[]> => {
+  ): Promise<GetEntitiesResponse> => {
     let queryParams = [] as string[][];
 
     if (options) {
@@ -131,7 +131,7 @@ export const createCrudly = (options: CrudlyOptions) => {
 
     await errorHandleShared(res);
 
-    return (await res.json()) as any[];
+    return (await res.json()) as GetEntitiesResponse;
   };
 
   const updateEntity = async (
@@ -160,17 +160,6 @@ export const createCrudly = (options: CrudlyOptions) => {
     });
 
     await errorHandleShared(res);
-  };
-
-  const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
-    const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
-      method: "GET",
-      headers,
-    });
-
-    await errorHandleShared(res);
-
-    return ((await res.json()) as any).totalCount;
   };
 
   const createTable = async (
@@ -217,6 +206,17 @@ export const createCrudly = (options: CrudlyOptions) => {
     await errorHandleShared(res);
   };
 
+  const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
+    const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
+      method: "GET",
+      headers,
+    });
+
+    await errorHandleShared(res);
+
+    return ((await res.json()) as any).totalCount;
+  };
+
   return {
     createEntity,
     createEntities,
@@ -225,12 +225,12 @@ export const createCrudly = (options: CrudlyOptions) => {
     getEntityById,
     getEntities,
     deleteEntity,
-    getTotalEntityCount,
 
     createTable,
     getTableSchema,
     getTables,
     deleteTable,
+    getTotalEntityCount,
   };
 };
 
