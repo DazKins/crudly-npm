@@ -257,14 +257,12 @@ const errorHandleShared = async (res: Response, { error404 }: ErrorOpts) => {
     return;
   }
 
-  switch (status) {
-    case 400:
+  switch (true) {
+    case status == 400:
       throw new CrudlyValidationError(await res.text());
-    case 404:
-      if (error404) {
+    case status == 404 && error404:
         throw new CrudlyNotFoundError();
-      }
-    case 429:
+    case status == 429:
       throw new CrudlyRateLimitExceededError();
     default:
       throw new CrudlyUnexpectedError(await res.text());
