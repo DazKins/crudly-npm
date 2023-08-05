@@ -45,7 +45,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return await res.text();
   };
@@ -60,7 +60,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entities),
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
   };
 
   const putEntity = async (
@@ -74,7 +74,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return await res.text();
   };
@@ -87,7 +87,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: false });
+    await errorHandleShared(res, {allowedStatuses: [404]});
 
     if (res.status === 404) {
       return null;
@@ -133,7 +133,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       }
     );
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return (await res.json()) as GetEntitiesResponse;
   };
@@ -149,7 +149,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return (await res.json()) as Entity;
   };
@@ -163,7 +163,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
   };
 
   const createTable = async (
@@ -176,7 +176,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(tableSchema),
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
   };
 
   const getTableSchema = async (
@@ -187,7 +187,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: false });
+    await errorHandleShared(res, {allowedStatuses: [404]});
 
     if (res.status === 404) {
       return null;
@@ -202,7 +202,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return (await res.json()) as { [key: string]: TableSchema };
   };
@@ -213,7 +213,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
   };
 
   const getTotalEntityCount = async (
@@ -224,7 +224,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, { error404: true });
+    await errorHandleShared(res);
 
     return ((await res.json()) as any).totalCount;
   };
@@ -247,21 +247,32 @@ export const createCrudly = (options: CrudlyOptions) => {
 };
 
 type ErrorOpts = {
-  error404: boolean;
+  allowedStatuses: number[];
 };
 
-const errorHandleShared = async (res: Response, { error404 }: ErrorOpts) => {
+const DefaultErrorOpts: ErrorOpts = {
+  allowedStatuses: [],
+};
+
+const errorHandleShared = async (
+  res: Response,
+  errorOpts: ErrorOpts = DefaultErrorOpts
+) => {
   const status = res.status;
 
   if (status < 300) {
     return;
   }
 
+  if (errorOpts.allowedStatuses.includes(status)) {
+    return;
+  }
+
   switch (true) {
     case status == 400:
       throw new CrudlyValidationError(await res.text());
-    case status == 404 && error404:
-        throw new CrudlyNotFoundError();
+    case status == 404:
+      throw new CrudlyNotFoundError();
     case status == 429:
       throw new CrudlyRateLimitExceededError();
     default:
