@@ -12,6 +12,7 @@ export enum FieldType {
 export type FieldSchema = {
   type: FieldType;
   isOptional: boolean;
+  values?: string[];
 };
 
 export type TableSchema = { [key: string]: FieldSchema };
