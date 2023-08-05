@@ -45,7 +45,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return await res.text();
   };
@@ -60,7 +60,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entities),
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
   };
 
   const putEntity = async (
@@ -74,7 +74,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return await res.text();
   };
@@ -82,12 +82,16 @@ export const createCrudly = (options: CrudlyOptions) => {
   const getEntityById = async (
     tableName: TableName,
     id: EntityId
-  ): Promise<Entity> => {
+  ): Promise<Entity | null> => {
     const res = await fetch(`${url}/tables/${tableName}/entities/${id}`, {
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: false });
+
+    if (res.status === 404) {
+      return null;
+    }
 
     return (await res.json()) as Entity;
   };
@@ -129,7 +133,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       }
     );
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return (await res.json()) as GetEntitiesResponse;
   };
@@ -145,7 +149,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(entity),
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return (await res.json()) as Entity;
   };
@@ -159,7 +163,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
   };
 
   const createTable = async (
@@ -172,16 +176,22 @@ export const createCrudly = (options: CrudlyOptions) => {
       body: JSON.stringify(tableSchema),
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
   };
 
-  const getTableSchema = async (tableName: TableName): Promise<TableSchema> => {
+  const getTableSchema = async (
+    tableName: TableName
+  ): Promise<TableSchema | null> => {
     const res = await fetch(`${url}/tables/${tableName}`, {
       method: "GET",
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: false });
+
+    if (res.status === 404) {
+      return null;
+    }
 
     return (await res.json()) as TableSchema;
   };
@@ -192,7 +202,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return (await res.json()) as { [key: string]: TableSchema };
   };
@@ -203,16 +213,18 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
   };
 
-  const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
+  const getTotalEntityCount = async (
+    tableName: TableName
+  ): Promise<number | null> => {
     const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
       method: "GET",
       headers,
     });
 
-    await errorHandleShared(res);
+    await errorHandleShared(res, { error404: true });
 
     return ((await res.json()) as any).totalCount;
   };
@@ -234,7 +246,11 @@ export const createCrudly = (options: CrudlyOptions) => {
   };
 };
 
-const errorHandleShared = async (res: Response) => {
+type ErrorOpts = {
+  error404: boolean;
+};
+
+const errorHandleShared = async (res: Response, { error404 }: ErrorOpts) => {
   const status = res.status;
 
   if (status < 300) {
@@ -245,7 +261,9 @@ const errorHandleShared = async (res: Response) => {
     case 400:
       throw new CrudlyValidationError(await res.text());
     case 404:
-      throw new CrudlyNotFoundError();
+      if (error404) {
+        throw new CrudlyNotFoundError();
+      }
     case 429:
       throw new CrudlyRateLimitExceededError();
     default:
