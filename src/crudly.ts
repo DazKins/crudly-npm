@@ -10,9 +10,9 @@ import {
 } from "./model/error";
 
 const CrudlyOptionsDefaults = {
-  host: "localhost",
-  port: ":80",
-  protocol: "http://",
+  host: "api.crudly.co",
+  port: ":443",
+  protocol: "https://",
 };
 
 export type GetEntitiesOptions = {
