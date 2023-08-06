@@ -1,13 +1,13 @@
 import fetch, { Response } from "node-fetch";
-import { CrudlyOptions } from "./model/options";
-import { TableName, TableSchema } from "./model/table";
-import { Entity, EntityId, GetEntitiesResponse } from "./model/entity";
+import { CrudlyOptions } from "./model/options.js";
+import { TableName, TableSchema } from "./model/table.js";
+import { Entity, EntityId, GetEntitiesResponse } from "./model/entity.js";
 import {
   CrudlyNotFoundError,
   CrudlyRateLimitExceededError,
   CrudlyUnexpectedError,
   CrudlyValidationError,
-} from "./model/error";
+} from "./model/error.js";
 
 const CrudlyOptionsDefaults = {
   host: "api.crudly.co",
