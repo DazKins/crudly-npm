@@ -11,7 +11,7 @@ import {
 
 const CrudlyOptionsDefaults = {
   host: "api.crudly.co",
-  port: ":443",
+  port: "443",
   protocol: "https://",
 };
 
@@ -87,7 +87,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, {allowedStatuses: [404]});
+    await errorHandleShared(res, { allowedStatuses: [404] });
 
     if (res.status === 404) {
       return null;
@@ -187,7 +187,7 @@ export const createCrudly = (options: CrudlyOptions) => {
       headers,
     });
 
-    await errorHandleShared(res, {allowedStatuses: [404]});
+    await errorHandleShared(res, { allowedStatuses: [404] });
 
     if (res.status === 404) {
       return null;
@@ -216,9 +216,7 @@ export const createCrudly = (options: CrudlyOptions) => {
     await errorHandleShared(res);
   };
 
-  const getTotalEntityCount = async (
-    tableName: TableName
-  ): Promise<number | null> => {
+  const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
     const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
       method: "GET",
       headers,
