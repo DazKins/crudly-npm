@@ -9,10 +9,15 @@ export enum FieldType {
   Enum = "enum",
 }
 
-export type FieldSchema = {
-  type: FieldType;
-  isOptional: boolean;
-  values?: string[];
-};
+export type FieldSchema =
+  | {
+      type: Exclude<FieldType, FieldType.Enum>;
+      isOptional: boolean;
+    }
+  | {
+      type: FieldType.Enum;
+      isOptional: boolean;
+      values: string[];
+    };
 
 export type TableSchema = { [key: string]: FieldSchema };
