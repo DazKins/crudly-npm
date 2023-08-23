@@ -8,6 +8,7 @@ import {
   CrudlyUnexpectedError,
   CrudlyValidationError,
 } from "./model/error.js";
+import { RateLimit } from "./model/rateLimit.js";
 
 const CrudlyOptionsDefaults = {
   host: "api.crudly.co",
@@ -227,6 +228,17 @@ export const createCrudly = (options: CrudlyOptions) => {
     return ((await res.json()) as any).totalCount;
   };
 
+  const getRateLimit = async (): Promise<RateLimit> => {
+    const res = await fetch(`${url}/rateLimit`, {
+      method: "GET",
+      headers,
+    });
+
+    await errorHandleShared(res);
+
+    return (await res.json()) as any;
+  };
+
   return {
     createEntity,
     createEntities,
@@ -241,6 +253,8 @@ export const createCrudly = (options: CrudlyOptions) => {
     getTables,
     deleteTable,
     getTotalEntityCount,
+
+    getRateLimit,
   };
 };
 
