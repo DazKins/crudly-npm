@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DazKins/crudly-npm.git"
+    "url": "git+https://github.com/crudly-dev/crudly-npm.git"
   },
   "author": "crudly",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DazKins/crudly-npm/issues"
+    "url": "https://github.com/crudly-dev/crudly-npm/issues"
   },
   "homepage": "https://crudly.co",
   "dependencies": {
