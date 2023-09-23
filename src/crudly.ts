@@ -1,6 +1,6 @@
 import fetch, { Response } from "node-fetch";
 import { CrudlyOptions } from "./model/options.js";
-import { TableName, TableSchema } from "./model/table.js";
+import { FieldSchema, TableName, TableSchema } from "./model/table.js";
 import { Entity, EntityId, GetEntitiesResponse } from "./model/entity.js";
 import {
   CrudlyNotFoundError,
@@ -217,6 +217,40 @@ export const createCrudly = (options: CrudlyOptions) => {
     await errorHandleShared(res);
   };
 
+  const addTableField = async (
+    tableName: TableName,
+    fieldName: string,
+    fieldSchema: FieldSchema,
+    defaultValue: any | null
+  ): Promise<void> => {
+    const res = await fetch(`${url}/tables/${tableName}/addField`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        name: fieldName,
+        schema: fieldSchema,
+        defaultValue
+      }),
+    });
+
+    await errorHandleShared(res);
+  };
+
+  const deleteTableField = async (
+    tableName: TableName,
+    fieldName: string,
+  ): Promise<void> => {
+    const res = await fetch(`${url}/tables/${tableName}/deleteField`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        name: fieldName,
+      }),
+    });
+
+    await errorHandleShared(res);
+  };
+
   const getTotalEntityCount = async (tableName: TableName): Promise<number> => {
     const res = await fetch(`${url}/tables/${tableName}/totalEntityCount`, {
       method: "GET",
@@ -253,6 +287,9 @@ export const createCrudly = (options: CrudlyOptions) => {
     getTables,
     deleteTable,
     getTotalEntityCount,
+
+    addTableField,
+    deleteTableField,
 
     getRateLimit,
   };
