@@ -167,19 +167,6 @@ export const createCrudly = (options: CrudlyOptions) => {
     await errorHandleShared(res);
   };
 
-  const createTable = async (
-    tableName: TableName,
-    tableSchema: TableSchema
-  ): Promise<void> => {
-    const res = await fetch(`${url}/tables/${tableName}`, {
-      method: "PUT",
-      headers,
-      body: JSON.stringify(tableSchema),
-    });
-
-    await errorHandleShared(res);
-  };
-
   const getTableSchema = async (
     tableName: TableName
   ): Promise<TableSchema | null> => {
@@ -282,7 +269,6 @@ export const createCrudly = (options: CrudlyOptions) => {
     getEntities,
     deleteEntity,
 
-    createTable,
     getTableSchema,
     getTables,
     deleteTable,
